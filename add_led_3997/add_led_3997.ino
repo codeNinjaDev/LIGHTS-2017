@@ -6,7 +6,7 @@
 #endif
 
 #define PIN 4
-#define NUM_LEDS 19
+#define NUM_LEDS 25
 #define BRIGHTNESS 100
 int in_1 = 7;
 int in_2 = 9;
@@ -26,6 +26,7 @@ void setup() {
 
   strip.setBrightness(BRIGHTNESS);
   strip.begin();
+
   strip.show(); // Initialize all pixels to 'off'
 }
 
@@ -34,49 +35,51 @@ void loop() {
   Serial.println(digitalRead(in_2));
   Serial.println(digitalRead(in_3));
   Serial.println(digitalRead(in_4));
+
   if (EnabledRoutine()) {
     Serial.println("Enabled Routine");
     rainbowCycle(1);
   } else if (ShoutRoutine()) {
     //gold
-    
+
     theaterChase(strip.Color(255, 215, 0), 45); // Red
 
 
 
     Serial.println("ShoutRoutine");
     //delay(10);
-  } else if (PIDWorking()) {
+  } else if (Brake2()) {
     //purple
-    Serial.println("PID Working");
+    Serial.println("Brake2");
 
-    color(238, 130, 238);
-  } else if (PIDLockedOn()) {
+    230, 230, 250
+  } else if (Brake1()) {
+    //violet
+    Serial.println("Brake1");
 
-    Serial.println("Locked on");
-
-    green();
-  } else if (PIDFail()) {
-    Serial.println("PID Fail");
+    color(249, 192, 255);
+  } else if (GearOuttake()) {
+    Serial.println("GearOuttake");
     red();
   } else if (GearIntake()) {
-    //orange
+    //green
     Serial.println("Gear Intake");
 
-    color(255, 40, 0);
+    green();
   } else if (Climbing()) {
     Serial.println("Climbing");
-    chase(strip.Color(255, 0, 0)); // Red
     chase(strip.Color(0, 255, 0)); // Green
-    chase(strip.Color(0, 0, 255)); // Blue
   } else if (DisabledRoutine()) {
     Serial.println("Disabled Routine");
 
     theaterChase(strip.Color(255, 0, 0), 45); // Red
   } else {
     Serial.println("Default");
-
     theaterChase(strip.Color(255, 0, 0), 45); // Red
+
+
+
+    //theaterChase(strip.Color(255, 0, 0), 45); // Red
   }
 }
 
@@ -99,8 +102,8 @@ void rainbowCycle(uint8_t wait) {
   uint16_t i, j;
 
   for (j = 0; j < 256; j++) { // 5 cycles of all colors on wheel
-    for (i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
+    for (i = 0; i < NUM_LEDS; i++) {
+      strip.setPixelColor(i, Wheel(((i * 256 / NUM_LEDS) + j) & 255));
     }
     strip.show();
     delay(wait);
@@ -112,14 +115,14 @@ void rainbowCycle(uint8_t wait) {
 void theaterChase(uint32_t c, uint8_t wait) {
   for (int j = 0; j < 5; j++) { //do 10 cycles of chasing
     for (int q = 0; q < 3; q++) {
-      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+      for (uint16_t i = 0; i < NUM_LEDS; i = i + 3) {
         strip.setPixelColor(i + q, c);  //turn every third pixel on
       }
       strip.show();
 
       delay(wait);
 
-      for (uint16_t i = 0; i < strip.numPixels(); i = i + 3) {
+      for (uint16_t i = 0; i < NUM_LEDS; i = i + 3) {
         strip.setPixelColor(i + q, 0);      //turn every third pixel off
       }
     }
@@ -156,43 +159,45 @@ void green () {
   }
 }
 bool DisabledRoutine() {
-  return ((digitalRead(in_1) == LOW) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == LOW));
+  return (((digitalRead(in_1) == LOW) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == LOW)));
 
 }
 
 bool EnabledRoutine() {
-  return ((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == LOW));
+  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == LOW)));
 
 }
 
 bool ShoutRoutine() {
-  return ((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == HIGH));
+  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == HIGH)));
 
 }
-
-bool PIDFail() {
-  return ((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == LOW));
-
-}
-bool PIDWorking() {
-  return ((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == HIGH));
+//PIDFail
+bool Brake2() {
+  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == LOW)));
 
 }
-bool PIDLockedOn() {
-  return ((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == HIGH));
+//PIDWorking
+bool Brake1() {
+  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == HIGH)));
+
+}
+//PIDLockedOn
+bool GearOuttake() {
+  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == HIGH)));
 
 }
 bool GearIntake() {
-  return ((digitalRead(in_1) == LOW) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == LOW));
+  return (((digitalRead(in_1) == LOW) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == LOW)));
 
 }
 bool Climbing() {
-  return ((digitalRead(in_1) == LOW) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == HIGH));
+  return (((digitalRead(in_1) == LOW) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == HIGH)));
 
 }
 
 static void chase(uint32_t c) {
-  for (uint16_t i = 0; i < strip.numPixels() + 4; i++) {
+  for (uint16_t i = 0; i < NUM_LEDS + 4; i++) {
     strip.setPixelColor(i  , c); // Draw new pixel
     strip.setPixelColor(i - 4, 0); // Erase pixel a few steps back
     strip.show();
@@ -200,5 +205,17 @@ static void chase(uint32_t c) {
   }
 }
 
+void example(int red, int green, int blue) {
+  for (uint16_t i = 0; i < (NUM_LEDS - 1); i++) {
+    strip.setPixelColor(i  , strip.Color(red, green, blue)); // Draw new pixel
+    strip.show();
+    delay(10);
+  }
+  for (uint16_t i = (NUM_LEDS + 1); i > 0 ; i--) {
+    strip.setPixelColor(i  , strip.Color(0, 0, 0)); // Draw blank pixel
+    strip.show();
+    delay(20);
+  }
+}
 
 
