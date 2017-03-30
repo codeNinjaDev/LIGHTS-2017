@@ -5,12 +5,12 @@
 #include <avr/power.h>
 #endif
 
-#define PIN 4
-#define NUM_LEDS 100
+#define PIN A0
+#define NUM_LEDS 15
 #define BRIGHTNESS 100
 int in_1 = 7;
-int in_2 = 
-9;
+int in_2 =
+  9;
 int in_3 = 11;
 int in_4 = 13;
 
@@ -42,27 +42,24 @@ void loop() {
     rainbowCycle(1);
   } else if (ShoutRoutine()) {
     //gold
-
-    theaterChase(strip.Color(255, 215, 0), 45); // Red
-
-
+    theaterChase(strip.Color(255, 215, 0), 45); // yellow
 
     Serial.println("ShoutRoutine");
     //delay(10);
   } else if (Brake2()) {
-    //purple
+    //whiteish
     Serial.println("Brake2");
+    color(200, 192, 210);
 
-    color(230, 230, 250);
   } else if (Brake1()) {
     //violet
     Serial.println("Brake1");
+    color(98, 31, 131);
 
-    color(249, 192, 255);
   } else if (GearOuttake()) {
     Serial.println("GearOuttake");
     red();
-  } else if (GearIntake()) {
+    } else if (GearIntake()) {
     //green
     Serial.println("Gear Intake");
 
@@ -72,12 +69,16 @@ void loop() {
     chase(strip.Color(0, 255, 0)); // Green
   } else if (DisabledRoutine()) {
     Serial.println("Disabled Routine");
-
-    theaterChase(strip.Color(255, 0, 0), 45); // Red
+    example(255, 0, 0);
+    //theaterChase(strip.Color(255, 0, 0), 45); // Red
   } else {
     Serial.println("Default");
+    red();
+    delay(500);
+    color(0, 0, 0);
+    delay(500);
 
-    theaterChase(strip.Color(255, 0, 0), 45); // Red
+    //theaterChase(strip.Color(255, 0, 0), 45); // Red
   }
 }
 
@@ -204,12 +205,12 @@ static void chase(uint32_t c) {
 }
 
 void example(int red, int green, int blue) {
-  for (uint16_t i = 0; i < (NUM_LEDS - 1); i++) {
+  for (uint16_t i = 0; i < (NUM_LEDS); i++) {
     strip.setPixelColor(i  , strip.Color(red, green, blue)); // Draw new pixel
     strip.show();
     delay(10);
   }
-  for (uint16_t i = (NUM_LEDS + 1); i > 0 ; i--) {
+  for (uint16_t i = (NUM_LEDS); i > 0 ; i--) {
     strip.setPixelColor(i  , strip.Color(0, 0, 0)); // Draw blank pixel
     strip.show();
     delay(20);
