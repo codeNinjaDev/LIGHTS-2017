@@ -6,10 +6,11 @@
 #endif
 
 #define PIN 4
-#define NUM_LEDS 25
+#define NUM_LEDS 100
 #define BRIGHTNESS 100
 int in_1 = 7;
-int in_2 = 9;
+int in_2 = 
+9;
 int in_3 = 11;
 int in_4 = 13;
 
@@ -52,7 +53,7 @@ void loop() {
     //purple
     Serial.println("Brake2");
 
-    230, 230, 250
+    color(230, 230, 250);
   } else if (Brake1()) {
     //violet
     Serial.println("Brake1");
@@ -75,11 +76,8 @@ void loop() {
     theaterChase(strip.Color(255, 0, 0), 45); // Red
   } else {
     Serial.println("Default");
+
     theaterChase(strip.Color(255, 0, 0), 45); // Red
-
-
-
-    //theaterChase(strip.Color(255, 0, 0), 45); // Red
   }
 }
 
