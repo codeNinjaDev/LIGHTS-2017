@@ -6,13 +6,12 @@
 #endif
 
 #define PIN A0
-#define NUM_LEDS 15
+#define NUM_LEDS 11
 #define BRIGHTNESS 100
-int in_1 = 7;
-int in_2 =
-  9;
-int in_3 = 11;
-int in_4 = 13;
+int in_1 = 1;
+int in_2 = 2;
+int in_3 = 3;
+int in_4 = 4;
 
 int count = 1;
 
@@ -40,26 +39,16 @@ void loop() {
   if (EnabledRoutine()) {
     Serial.println("Enabled Routine");
     rainbowCycle(1);
-  } else if (ShoutRoutine()) {
+  } else if (Ramp()) {
     //gold
     theaterChase(strip.Color(255, 215, 0), 45); // yellow
 
-    Serial.println("ShoutRoutine");
+    Serial.println("Ramp");
     //delay(10);
-  } else if (Brake2()) {
-    //whiteish
-    Serial.println("Brake2");
-    color(200, 192, 210);
-
-  } else if (Brake1()) {
-    //violet
-    Serial.println("Brake1");
-    color(98, 31, 131);
-
-  } else if (GearOuttake()) {
-    Serial.println("GearOuttake");
-    red();
-    } else if (GearIntake()) {
+  }  else if (GearPeg()) {
+    Serial.println("GearPeg");
+    chase(strip.Color(219, 112, 147));
+  } else if (GearIntake()) {
     //green
     Serial.println("Gear Intake");
 
@@ -69,16 +58,15 @@ void loop() {
     chase(strip.Color(0, 255, 0)); // Green
   } else if (DisabledRoutine()) {
     Serial.println("Disabled Routine");
-    example(255, 0, 0);
-    //theaterChase(strip.Color(255, 0, 0), 45); // Red
+    delay(50);
+    red();
+    delay(50);
+    
+      //theaterChase(strip.Color(255, 0, 0), 45); // Red
   } else {
     Serial.println("Default");
-    red();
-    delay(500);
-    color(0, 0, 0);
-    delay(500);
+    theaterChase(strip.Color(255, 0, 0), 45); // Red
 
-    //theaterChase(strip.Color(255, 0, 0), 45); // Red
   }
 }
 
@@ -167,22 +155,13 @@ bool EnabledRoutine() {
 
 }
 
-bool ShoutRoutine() {
+bool Ramp() {
   return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == HIGH) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == HIGH)));
 
 }
-//PIDFail
-bool Brake2() {
-  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == LOW)));
 
-}
-//PIDWorking
-bool Brake1() {
-  return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == LOW) && (digitalRead(in_4) == HIGH)));
-
-}
 //PIDLockedOn
-bool GearOuttake() {
+bool GearPeg() {
   return (((digitalRead(in_1) == HIGH) && (digitalRead(in_2) == LOW) && (digitalRead(in_3) == HIGH) && (digitalRead(in_4) == HIGH)));
 
 }
